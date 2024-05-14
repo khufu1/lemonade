@@ -1,0 +1,3 @@
+max_width = 80
+# enable when the feature's stable
+# brace_style = "AlwaysNextLine"
