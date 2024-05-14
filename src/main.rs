@@ -8,9 +8,12 @@ use std::fs;
 use std::path::PathBuf;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let devices = get_devices().unwrap().into_iter();
-    for dev in devices {
+    let devices = get_devices().unwrap();
+    for dev in &devices {
         dev.show();
+        if dev != devices.last().unwrap() {
+            println!()
+        }
     }
     Ok(())
 }
@@ -47,9 +50,17 @@ impl Device {
     }
 
     fn show(&self) {
-        println!("{}", self.name.red());
-        println!("{}", self.dir.to_str().unwrap().truecolor(100, 100, 200));
-        println!("{}", format!("{}", self.avg_temp).blue());
+        println!("Name: {}", self.name.red());
+        let mut idx: u32 = 0;
+        for temp in &self.temps {
+            println!("Sensor{}: {}", idx, format!("{}", temp).yellow());
+            idx += 1;
+        }
+        if self.avg_temp == 0.0 {
+            println!("Avg temp: {}", format!("{}", "N/A").blue());
+        } else {
+            println!("Avg temp: {}", format!("{}", self.avg_temp).blue());
+        }
     }
 
     fn init_data(&mut self) -> Result<(), Box<dyn Error>> {
